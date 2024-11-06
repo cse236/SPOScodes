@@ -1,0 +1,121 @@
+import java.util.Scanner;
+import java.util.concurrent.Semaphore;
+
+class RW
+{
+
+	public static void main(String[] args) 
+	{
+		ReaderWriter rw = new ReaderWriter();
+		Scanner sc = new Scanner(System.in);
+		
+		rw.new Reader();
+		rw.new Reader();
+		rw.new Reader();
+		rw.new Writer();
+		rw.new Reader();
+		rw.new Reader();
+		rw.new Writer();
+		rw.new Reader();
+		rw.new Reader();
+		
+	}
+
+}
+class ReaderWriter
+{
+
+	Semaphore readers = new Semaphore(0);
+	Semaphore mutex = new Semaphore(1);
+	Semaphore writers = new Semaphore(0);
+	static int rd = 0;
+	static int count = 1;
+	static int wr = 0;
+	Scanner sc = new Scanner(System.in);
+
+	static String msg = "Hello World!";
+	
+
+	class Writer implements Runnable
+	{
+		Writer()
+		{
+			// rd = 0;
+			Thread t = new Thread(this,"Writer");
+
+			t.start();
+		}
+
+		public void run()
+		{
+			try
+			{	
+				
+				mutex.acquire();
+				writers.release();
+
+				if(wr == 0 && rd == 0)
+				{
+					wr++;
+					System.out.print("Enter Message to be written : ");
+					msg = sc.nextLine();
+				}
+				else
+					System.out.println("Readers are Reading!");
+				
+				mutex.release();
+				writers.acquire();
+				wr--;
+			}
+			catch(InterruptedException e)
+			{
+				System.out.println(e.getMessage());
+			}
+
+
+		}
+	}
+
+	class Reader implements Runnable
+	{
+		int no = count;
+
+		Reader()
+		{
+			count++;
+			Thread t = new Thread(this,"Reader");
+
+			t.start();
+		}
+
+		public void run()
+		{
+			try
+			{
+				
+				mutex.acquire();
+				readers.release();
+
+				if(wr == 0)
+				{
+					rd++;
+					System.out.println("Reader " + no + " is reading : " + msg);
+					Thread.sleep(1000); // Simulating Reading time.
+					rd--;
+				}
+				else
+					System.out.println("A Writer is Writing!");
+
+				mutex.release();
+				readers.acquire();
+				
+				System.out.println("Reader " + no + " is Done!");
+				
+			}
+			catch(InterruptedException e)
+			{
+				System.out.println(e.getMessage());
+			}
+		}
+	}
+}

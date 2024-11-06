@@ -1,0 +1,126 @@
+import java.io.*;
+import java.util.*;
+
+public class PageReplacementSimulation {
+
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nPage Replacement Algorithm Simulation");
+            System.out.println("1. FIFO Page Replacement");
+            System.out.println("2. LRU Page Replacement");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    fifoPageReplacement();
+                    break;
+
+                case 2:
+                    lruPageReplacement();
+                    break;
+
+                case 3:
+                    System.out.println("Exiting program.");
+                    return;
+
+                default:
+                    System.out.println("Invalid choice! Please enter 1, 2, or 3.");
+            }
+        }
+    }
+
+    // FIFO Page Replacement
+    public static void fifoPageReplacement() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        
+        System.out.print("Enter number of frames: ");
+        int frameCount = Integer.parseInt(reader.readLine());
+        
+        System.out.print("Enter the number of pages: ");
+        int numPages = Integer.parseInt(reader.readLine());
+        
+        int[] pages = new int[numPages];
+        System.out.println("Enter the page numbers:");
+        for (int i = 0; i < numPages; i++) {
+            pages[i] = Integer.parseInt(reader.readLine());
+        }
+
+        int[] frames = new int[frameCount];
+        Arrays.fill(frames, -1);
+        
+        int pointer = 0, pageFaults = 0;
+        
+        System.out.println("Frames after each page:");
+        for (int page : pages) {
+            boolean pageFound = false;
+
+            // Check if page is already in frames
+            for (int frame : frames) {
+                if (frame == page) {
+                    pageFound = true;
+                    break;
+                }
+            }
+
+            // If page is not in frames, perform replacement
+            if (!pageFound) {
+                frames[pointer] = page;
+                pointer = (pointer + 1) % frameCount;
+                pageFaults++;
+            }
+
+            // Display current frames
+            System.out.println(Arrays.toString(frames));
+        }
+
+        System.out.println("Total Page Faults (FIFO): " + pageFaults);
+    }
+
+    // LRU Page Replacement
+    public static void lruPageReplacement() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter number of pages: ");
+        int numPages = scanner.nextInt();
+
+        System.out.print("Enter the reference string: ");
+        int[] pages = new int[numPages];
+        for (int i = 0; i < numPages; i++) {
+            pages[i] = scanner.nextInt();
+        }
+
+        System.out.print("Enter number of frames: ");
+        int frameCount = scanner.nextInt();
+
+        Map<Integer, Integer> lruCache = new LinkedHashMap<>(frameCount, 0.75f, true);
+        int pageFaults = 0;
+        int hits = 0;
+
+        System.out.println("Frames after each page:");
+        for (int page : pages) {
+            if (!lruCache.containsKey(page)) {
+                pageFaults++;
+
+                // Remove least recently used page if cache is full
+                if (lruCache.size() >= frameCount) {
+                    int lruPage = lruCache.keySet().iterator().next();
+                    lruCache.remove(lruPage);
+                }
+            } else {
+                hits++;
+            }
+
+            // Insert current page (refreshes the order in LinkedHashMap)
+            lruCache.put(page, page);
+            System.out.println(lruCache.keySet());
+        }
+
+        System.out.println("Total Page Faults (LRU): " + pageFaults);
+        System.out.println("Hits: " + hits);
+        System.out.printf("Hit Ratio: %.2f\n", (double) hits / numPages);
+    }
+}

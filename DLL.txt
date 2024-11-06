@@ -1,0 +1,65 @@
+STEP 1: Java file
+
+public class testJni
+{
+	static
+	{
+		System.loadLibrary("native");
+	}
+	public static void main(String args[])
+	{
+		int a = 10, b = 20;
+		System.out.println("Addition is "+ new testJni().add(a,b));
+		System.out.println("Subtraction is "+ new testJni().sub(b,a));
+		System.out.println("Multiplication is "+ new testJni().sub(b,a));
+		System.out.println("Division is "+ new testJni().sub(b,a));
+	}
+	private native int add(int n1,int n2);
+	private native int sub(int n1,int n2);
+	private native int mul(int n1,int n2);
+	private native int div(double n1,double n2);
+}
+
+STEP 2: C File
+
+#include<jni.h>
+#include<stdio.h>
+#include "testJni.h" 
+JNIEXPORT jint JNICALL Java_testJni_add(JNIEnv *e, jobject obj, jint a, jint b)
+{
+	jint res;
+	res = a + b;
+	return res;
+}
+JNIEXPORT jint JNICALL Java_testJni_sub(JNIEnv *e, jobject o, jint a, jint b)
+{
+	jint res;
+	res = a - b;
+	return res;
+}
+JNIEXPORT jint JNICALL Java_testJni_mul(JNIEnv *e, jobject o, jint a,  jint b)
+{
+	jint res;
+	res = a * b;
+	return res;
+}
+
+JNIEXPORT jint JNICALL Java_testJni_div(JNIEnv *e, jobject o, jdouble a, jdouble b)
+{
+	jint res;
+	res = a / b;
+	return res;
+}
+
+PATH OF DLL
+
+javac -h . SampleDll.java //compiilation of java 
+
+gcc -c -fPIC -I /usr/lib/jvm/java-1.8.0-openjdk-amd64/include -I/usr/lib/jvm/java-1.8.0-openjdk-amd64/include/linux testJni1.c -o testJni1.o
+gcc /path for jni.h/    file.c
+
+gcc -shared -fPIC -o libnative.so testJni.o -lc
+
+java -Djava.library.path=. testJni
+
+java /librarpath/ filename

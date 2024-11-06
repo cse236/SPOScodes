@@ -1,0 +1,162 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class PageReplacement {
+
+    // Optimal Page Replacement Algorithm
+    public static void optimalPageReplacement() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the number of pages: ");
+        int noofpages = sc.nextInt();
+        int[] pages = new int[noofpages];
+        
+        System.out.println("Enter the page reference string:");
+        for (int i = 0; i < noofpages; i++) {
+            pages[i] = sc.nextInt();
+        }
+        
+        System.out.print("Enter the number of frames: ");
+        int capacity = sc.nextInt();
+        int[] frame = new int[capacity];
+        Arrays.fill(frame, -1);
+
+        int hit = 0, fault = 0, ptr = 0;
+        boolean isFull = false;
+
+        for (int i = 0; i < noofpages; i++) {
+            int search = -1;
+            for (int j = 0; j < capacity; j++) {
+                if (frame[j] == pages[i]) {
+                    search = j;
+                    hit++;
+                    System.out.printf("Page %d: Hit\n", pages[i]);
+                    break;
+                }
+            }
+
+            if (search == -1) {
+                if (isFull) {
+                    int[] index = new int[capacity];
+                    boolean[] indexFlag = new boolean[capacity];
+                    for (int j = i + 1; j < noofpages; j++) {
+                        for (int k = 0; k < capacity; k++) {
+                            if ((pages[j] == frame[k]) && (!indexFlag[k])) {
+                                index[k] = j;
+                                indexFlag[k] = true;
+                                break;
+                            }
+                        }
+                    }
+                    int max = index[0];
+                    ptr = 0;
+                    for (int j = 0; j < capacity; j++) {
+                        if (index[j] == 0) index[j] = noofpages + 1;
+                        if (index[j] > max) {
+                            max = index[j];
+                            ptr = j;
+                        }
+                    }
+                }
+                frame[ptr] = pages[i];
+                fault++;
+                System.out.printf("Page %d: Fault\n", pages[i]);
+                if (!isFull) {
+                    ptr++;
+                    if (ptr == capacity) {
+                        ptr = 0;
+                        isFull = true;
+                    }
+                }
+            }
+        }
+
+        System.out.println("Total Page Faults (Optimal): " + fault);
+        System.out.println("Total Hits (Optimal): " + hit);
+        System.out.printf("Hit Ratio: %.2f%%\n", ((double) hit / noofpages) * 100);
+        System.out.printf("Fault Ratio: %.2f%%\n", ((double) fault / noofpages) * 100);
+        sc.close();
+    }
+
+    // FIFO Page Replacement Algorithm
+    public static void fifoPageReplacement() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        
+        System.out.print("Enter the number of frames: ");
+        int frameCount = Integer.parseInt(reader.readLine());
+        
+        System.out.print("Enter the number of pages: ");
+        int numPages = Integer.parseInt(reader.readLine());
+        
+        int[] pages = new int[numPages];
+        System.out.println("Enter the page reference string:");
+        for (int i = 0; i < numPages; i++) {
+            pages[i] = Integer.parseInt(reader.readLine());
+        }
+
+        int[] frames = new int[frameCount];
+        Arrays.fill(frames, -1);
+        
+        int pointer = 0, pageFaults = 0, hits = 0;
+        
+        for (int page : pages) {
+            boolean pageFound = false;
+
+            // Check if page is already in frames
+            for (int frame : frames) {
+                if (frame == page) {
+                    pageFound = true;
+                    hits++;
+                    System.out.printf("Page %d: Hit\n", page);
+                    break;
+                }
+            }
+
+            // If page is not in frames, perform replacement
+            if (!pageFound) {
+                frames[pointer] = page;
+                pointer = (pointer + 1) % frameCount;
+                pageFaults++;
+                System.out.printf("Page %d: Fault\n", page);
+            }
+
+            // Display current frames
+            System.out.println("Current Frames: " + Arrays.toString(frames));
+        }
+
+        System.out.println("Total Page Faults (FIFO): " + pageFaults);
+        System.out.println("Total Hits (FIFO): " + hits);
+        System.out.printf("Hit Ratio: %.2f%%\n", ((double) hits / numPages) * 100);
+        System.out.printf("Fault Ratio: %.2f%%\n", ((double) pageFaults / numPages) * 100);
+    }
+
+    // Menu Driven Program
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("\nChoose Page Replacement Algorithm:");
+            System.out.println("1. FIFO");
+            System.out.println("2. Optimal");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    fifoPageReplacement();
+                    break;
+                case 2:
+                    optimalPageReplacement();
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    sc.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+}
