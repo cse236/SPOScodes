@@ -11,8 +11,8 @@ public class testJni
 		int a = 10, b = 20;
 		System.out.println("Addition is "+ new testJni().add(a,b));
 		System.out.println("Subtraction is "+ new testJni().sub(b,a));
-		System.out.println("Multiplication is "+ new testJni().sub(b,a));
-		System.out.println("Division is "+ new testJni().sub(b,a));
+		System.out.println("Multiplication is "+ new testJni().mul(b,a));
+		System.out.println("Division is "+ new testJni().div(b,a));
 	}
 	private native int add(int n1,int n2);
 	private native int sub(int n1,int n2);
