@@ -1,0 +1,180 @@
+1. What is synchronization of threads? 
+Thread synchronization is a way to make sure that multiple threads in a program don’t interfere with each other when accessing shared resources, like variables or files.
+
+2. Explain reader writer problem
+The Reader-Writer problem is a classic problem in computer science where multiple threads (or processes) need to access shared data.
+---Readers want to read the data without changing it. Multiple readers can read at the same time.
+Writers need to modify the data. But only one writer can access the data at a time, and no readers can read it while a writer is writing.
+
+3. Explain wait and sequence functions : used to control the flow of threads when they are waiting for certain conditions to be met.
+wait(): This function is called by a thread when it wants to pause its execution and wait for another thread to notify it.
+notify(): This function is called by a thread to wake up one of the threads that are waiting.
+release() and acquire(): these functions help ensure that only one thread can access a resource at a time
+release(): This function is used by a thread to request access to a resource.
+acquire(): This function is used by a thread to release the resource after it is done using it
+acquire() is used to lock a resource and gain access to it.
+release() is used to unlock the resource and allow other threads to use it.
+
+
+4. What is semaphore. 
+A semaphore is like a counter that helps control how many threads can access a shared resource
+
+5. What are different types of semaphore
+1) Binary Semaphore
+Used to control access to a single resource. It works like a lock to ensure that only one thread can access a resource at a time.
+Behavior:
+0 means the resource is unavailable (locked).
+1 means the resource is available (unlocked).
+
+2) Counting Semaphore
+Can have any non-negative integer value (0, 1, 2, 3,...).
+Purpose: Used to manage access to a finite number of identical resources. It tracks the available resources.
+Behavior:
+The value of the semaphore represents the number of available resources.
+If the value is greater than 0, threads can access the resource.
+If the value is 0, threads are blocked until the semaphore is incremented (i.e., resources become available).
+
+6.Mutex
+A mutex (short for "mutual exclusion") is a synchronization tool used in programming to prevent multiple threads from accessing a shared resource at the same time. It ensures that only one thread can access a critical section of code or resource at any given moment,
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. What are the types of CPU scheduler?
+There are generally three types of CPU schedulers:
+Long-Term Scheduler: Decides which processes are admitted into the ready queue. It controls the degree of multiprogramming (how many processes can be in memory).
+Short-Term Scheduler (or CPU Scheduler): Selects the next process to execute from the ready queue. It operates frequently (milliseconds) and determines which process should run next on the CPU.
+Medium-Term Scheduler: Sometimes called swapping scheduler, it moves processes in and out of memory (i.e., swaps processes between the main memory and disk). It helps in managing the degree of multiprogramming.
+
+2. What is the difference between long and short term scheduling?
+Long-Term Scheduling:
+-Decides which processes should be brought into memory.
+-It controls the degree of multiprogramming.
+-Operates less frequently (minutes or seconds).
+Short-Term Scheduling:
+-Decides which of the ready processes should run next on the CPU.
+-Operates frequently (milliseconds).
+-Focuses on efficiency, such as ensuring processes get CPU time.
+
+3. Logic of program?
+In programming, "logic" refers to the set of instructions that dictate how the program behaves based on input conditions. It involves decision-making (using conditionals), loops, and other flow-control mechanisms to determine the course of action.
+
+4. What is preemptive and non-preemptive scheduling?
+Preemptive Scheduling: The operating system can interrupt a running process and assign the CPU to another process (even if the running process has not finished its execution).
+Example: Round Robin, Shortest Job Next (SJN).
+
+Non-Preemptive Scheduling:Once a process starts executing, it will continue until it finishes or voluntarily gives up the CPU.
+Example: First-Come-First-Served (FCFS), Priority Scheduling.
+
+5. What are types of scheduling algorithms?
+First-Come, First-Served (FCFS): Processes are executed in the order they arrive.
+Shortest Job First (SJF): The process with the smallest execution time is selected next.
+Round Robin (RR): Each process is assigned a fixed time slice or quantum, and then moved to the back of the queue if it isn’t finished.
+Priority Scheduling: Processes are executed based on priority. Higher priority processes are executed first.
+
+6. Why Priority scheduling may cause low-priority processes to starve?
+
+7. What are the goals of scheduling?
+Maximizing CPU Utilization: Ensuring the CPU is used efficiently.
+Maximizing Throughput: Completing as many processes as possible within a given period.
+Minimizing Waiting Time: Reducing the amount of time processes spend waiting in the ready queue.
+Minimizing Turnaround Time: Reducing the total time from submission to completion of a process.
+Fairness: Ensuring that all processes are given a fair amount of CPU time and resources.
+Maximizing System Responsiveness: Especially important for interactive systems where user experience matters.
+
+8. Define the difference between preemptive and non-preemptive scheduling.
+
+9. Which scheduling algorithm is best? Why?
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. What is virtual memory?
+ It allows programs to be executed even if they are larger than the actual physical memory (RAM).
+
+2. Explain working of LRU page replacement algorithm
+The LRU page replacement algorithm works by keeping track of the order in which pages are accessed. The idea is to replace the page that has not been used for the longest period of time when a page fault occurs.
+
+3. Explain working of OPTIMAL page replacement algorithm
+The Optimal page replacement algorithm is theoretical and works by replacing the page that will not be needed for the longest period in the future.
+
+4. Which Page replacement algorithm is best?
+Optimal (OPT) is the best in terms of minimizing page faults because it always selects the page that will not be used for the longest time.
+LRU (Least Recently Used) is often considered the best practical alternative because it approximates the optimal algorithm with relatively simple implementation and does not require future knowledge.
+
+5. Explain what is Belody’s Anomaly?
+ adding more memory (or frames) to a system can sometimes cause more page faults, which contradicts the expectation that more memory should improve performance. This anomaly is most commonly seen in the FIFO (First-In-First-Out) page replacement algorithm.
+
+6. Explain the scenario in which page replacement algorithm is used?
+Page replacement algorithms are used when a page fault occurs. A page fault happens when a program accesses a page in memory that is not currently loaded in the physical RAM. In such a scenario, the operating system must decide which page to evict from memory to make space for the new page.
+
+Page replacement algorithms are especially useful in systems with limited physical memory (RAM), where multiple programs or processes need to share the memory. When the available physical memory is full, the page replacement algorithm is invoked to manage which pages remain in memory.
+
+7. Explain what is page fault?
+A page fault is an event that occurs when a program accesses a page that is not currently loaded into physical memory (RAM).
+
+8. Explain what is paging scheme?
+A paging scheme is a memory management scheme that eliminates the need for contiguous memory allocation. It breaks physical memory into fixed-size blocks called pages, and logical memory (used by processes) into blocks of the same size called page frames.
+
+9. Explain what is counting based page replacement algorithms?
+Counting-based page replacement algorithms use a counter or frequency of page references to decide which page to replace.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. What is two pass assembler?
+2. What is the significance of symbol table?
+3. Explain the assembler directives EQU, ORIGIN. 4. Explain the assembler directives START, END, LTORG. 5. What is the use of POOLTAB and LITTAB?
+6. How literals are handled in pass I?
+7. What are the tasks done in Pass I?
+8. How error handling is done in pass I?
+9. Which intermediate data structures are designed and implemented in PassI?
+10. What is the format of a machine code generated in PassII?
+11. What is forward reference? How it is resolved by assembler?
+12. How error handling is done in pass II?
+13. What is the difference between IS, DL and AD?
+14. What are the tasks done in Pass II?
+
+What is two pass assembler?
+√ What is the significance of symbol table?
+√ Explain the assembler directives EQU, ORIGIN. √ Explain the assembler directives START, END, LTORG. √ What is the use of POOLTAB and LITTAB?
+√ How literals are handled in pass I?
+√ What are the tasks done in Pass I?
+√ How error handling is done in pass I?
+√ Which intermediate data structures are designed and implemented in PassI?
+√ What is the format of a machine code generated in PassII?
+√ What is forward reference? How it is resolved by assembler?
+√ How error handling is done in pass II?
+√ What is the difference between IS, DL and AD?
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+√ Difference between static link library and dynamic link library
+1.Static Link Library (Static Library): The code in a static library is linked to the program at compile time. // The resulting executable is larger
+2.Dynamic Link Library (DLL): The code in a dynamic library is linked to the program at runtime // The executable is smaller
+
+√ What is shared object?
+A shared object (also known as shared library) is a type of file that contains code and data that can be used by multiple programs simultaneously. It is similar to a dynamic link library (DLL) on Windows. Shared objects are typically found in Unix-based operating systems and have the .so extension.
+
+√ Advantages/Disadvantages of using JNI
+A shared object (also known as shared library) is a type of file that contains code and data that can be used by multiple programs simultaneously. It is similar to a dynamic link library (DLL) on Windows. Shared objects are typically found in Unix-based operating systems and have the .so extension.
+
+How DLL Program works?
+A Dynamic Link Library (DLL) is a collection of code and data that multiple programs can use simultaneously
+
+Path for DLL
+1) javac -h . SampleDll.java
+//This command is used to generate C header files from a Java source file that contains native methods (methods implemented in other languages such as C).
+
+2) gcc -c -fPIC -I /usr/lib/jvm/java-1.8.0-openjdk-amd64/include -I/usr/lib/jvm/java-1.8.0-openjdk-amd64/include/linux testJni1.c -o testJni1.o
+This command compiles the C code that contains the implementation of the native methods declared in the Java class. It uses GCC (GNU Compiler Collection) and includes the necessary JNI header files.
+-fPIC: Stands for "Position Independent Code". This option tells gcc to generate machine code that is not dependent on its memory address, which is needed for creating shared libraries.
+
+3) gcc -shared -fPIC -o libnative.so testJni.o -lc
+This command is used to link the object files (testJni.o) into a shared library (libnative.so), which can be loaded by Java through JNI.
+
+4)java -Djava.library.path=. testJni
+This command runs the Java program that calls the native methods defined in the shared library.
+
+Write a Java Program with Native Methods: Declare native methods in your Java code using the native keyword.
+Generate the Header File: Use javac -h to generate a C header file from the Java program.
+Implement the Native Methods in C: Write a C file that implements the native methods, using the header generated in the previous step.
+Compile the C Code: Use gcc to compile the C code into an object file.
+Create the Shared Library: Use gcc again to link the object file into a shared library (.so).
+Run the Java Program: Use java to run the Java program, specifying the library path to load the shared library
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
