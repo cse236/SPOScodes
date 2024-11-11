@@ -1,160 +1,174 @@
 import java.util.Scanner;
 
+// Class to store the size, block allocated, and index for each process
 class Sizes
 {
-	int size = 0;
-	int block_alloc = 0;
-	int index = 0;
+    int size = 0;         // The size of the process
+    int block_alloc = 0;  // The block allocated to the process (size of the block)
+    int index = 0;        // The index of the block allocated to the process
 }
 
-public class Fitter
+// Main class to implement memory allocation strategies
+public class Fitter1
 {
-	static void WorstFit(int blocks[], Sizes sizes[], int n, int m)
-	{
-		int j,i;
-		int rem_size[] = new int[n];
-		for(i = 0 ; i < n; i++)
-			rem_size[i] = blocks[i];
-		int max_ind  = -1, max = -1;
-		for(i = 0; i < m; i++)
-		{			
-			max = max_ind = -1;
-			boolean flag = true;
-			for(j = 0; j < n; j++)
-			{
-				if(sizes[i].size <= rem_size[j])
-				{
-					if( max < rem_size[j] - sizes[i].size || flag == true )
-					{
-						max = rem_size[j] - sizes[i].size;
-						max_ind = j;
-						flag = false;
-					}
-				}
-			}
-			if(!(max < 0))
-			{
-				rem_size[max_ind] = rem_size[max_ind] - sizes[i].size;
-				sizes[i].block_alloc = blocks[max_ind];
-				sizes[i].index = max_ind;
+    // Worst Fit memory allocation strategy
+    static void WorstFit(int blocks[], Sizes sizes[], int n, int m)
+    {
+        int j, i;
+        int rem_size[] = new int[n];  // Array to store remaining sizes of the blocks
+        // Initialize remaining sizes of blocks to the original block sizes
+        for(i = 0; i < n; i++)
+            rem_size[i] = blocks[i];
 
-			}
-		}
+        int max_ind = -1, max = -1;
+        
+        // Loop through each process
+        for(i = 0; i < m; i++)
+        {            
+            max = max_ind = -1;  // Reset max variables for each process
+            boolean flag = true;
+            
+            // Loop through each block to find the largest block that can fit the process
+            for(j = 0; j < n; j++)
+            {
+                if(sizes[i].size <= rem_size[j])  // Check if the process can fit in the block
+                {
+                    if(max < rem_size[j] - sizes[i].size || flag == true)
+                    {
+                        max = rem_size[j] - sizes[i].size;  // Update the max remaining size
+                        max_ind = j;  // Store the index of the block
+                        flag = false;  // Once a block is found, disable flag
+                    }
+                }
+            }
+            
+            // If a suitable block is found, allocate the block to the process
+            if(!(max < 0))
+            {
+                rem_size[max_ind] = rem_size[max_ind] - sizes[i].size;  // Reduce remaining size of the block
+                sizes[i].block_alloc = blocks[max_ind];  // Allocate block to process
+                sizes[i].index = max_ind;  // Store the index of the allocated block
+            }
+        }
 
-		System.out.print("\nProcess No.\tSizes\tBlock Size\tRemaining Size\n");
-		for(i = 0; i < m; i++)
-		{
+        // Print the results of allocation
+        System.out.print("\nProcess No.\tSizes\tBlock Size\tRemaining Size\n");
+        for(i = 0; i < m; i++)
+        {
+            System.out.printf("%6d%13d%10d", i + 1, sizes[i].size, sizes[i].block_alloc);
+            if(sizes[i].block_alloc == 0)
+                System.out.printf("\t\tNo Block Allocated\n");
+            else
+                System.out.printf("%15d\n", rem_size[sizes[i].index]);
+        }
+    }
 
-			System.out.printf("%6d%13d%10d",i+1,sizes[i].size,sizes[i].block_alloc);
-			if(sizes[i].block_alloc == 0)
-				System.out.printf("\t\tNo Block Allocated\n");
-			else
-				System.out.printf("%15d\n",rem_size[sizes[i].index]);
-		}
-	}
+    // Next Fit memory allocation strategy
+    static void NextFit(int blocks[], Sizes sizes[], int n, int m)
+    {
+        int i, j, count = 0;
+        int rem_size[] = new int[n];  // Array to store remaining sizes of blocks
+        // Initialize remaining sizes of blocks to the original block sizes
+        for(i = 0; i < n; i++)
+            rem_size[i] = blocks[i];
 
-	static void NextFit(int blocks[], Sizes sizes[], int n, int m)
-	{
-		int i,j,count = 0;
-		int rem_size[] = new int[n];
-		for(i = 0 ; i < n; i++ )
-			rem_size[i] = blocks[i];
+        // First process allocation (search for a block to fit the process)
+        for(j = 0; j < n; j++)
+        {
+            if(sizes[0].size <= rem_size[j])  // Check if the process can fit in the block
+            {
+                rem_size[j] -= sizes[0].size;  // Reduce remaining size of the block
+                sizes[0].block_alloc = blocks[j];  // Allocate the block to the process
+                sizes[0].index = j;  // Store the index of the allocated block
+                break;
+            }
+        }
 
-		for(j = 0; j < n; j++)
-		{
-			if(sizes[0].size <= rem_size[j])
-			{
-				rem_size[j] -= sizes[0].size;
-				sizes[0].block_alloc = blocks[j];
-				sizes[0].index = j;
-				break;
-			}
-		}
+        // Loop through remaining processes and allocate blocks using Next Fit strategy
+        for(i = 1; i < m; i++)
+        {
+            // The outer loop keeps track of the process being allocated
+            for(count = 0, j = j + 1; count < n; j++)
+            {
+                j = j % n;  // Ensure that j wraps around to simulate circular allocation
+                if(sizes[i].size <= rem_size[j])  // Check if the process fits in the block
+                {
+                    rem_size[j] -= sizes[i].size;  // Reduce remaining size of the block
+                    sizes[i].block_alloc = blocks[j];  // Allocate the block to the process
+                    sizes[i].index = j;  // Store the index of the allocated block
+                    break;
+                }
+                count++;  // Increment the count
+                System.out.println(j);  // Debugging output for current block index
+            }
+        }
 
-		for(i = 1; i < m; i++)
-		{
-			for(count = 0,j = j + 1; count < n ;j++)
-			{
-				j = j % n;
-				if(sizes[i].size <= rem_size[j])
-				{
-					rem_size[j] -= sizes[i].size;
-					sizes[i].block_alloc = blocks[j];
-					sizes[i].index = j;
-					break;
-				}
-				
-				count++;
-				System.out.println(j);
-			}
-		}
+        // Print the results of allocation
+        System.out.print("\nProcess No.\tSizes\tBlock Size\tRemaining Size\n");
+        for(i = 0; i < m; i++)
+        {
+            System.out.printf("%6d%13d%10d", i + 1, sizes[i].size, sizes[i].block_alloc);
+            if(sizes[i].block_alloc == 0)
+                System.out.printf("\t\tNo Block Allocated\n");
+            else
+                System.out.printf("%15d\n", rem_size[sizes[i].index]);
+        }
+    }
 
-		System.out.print("\nProcess No.\tSizes\tBlock Size\tRemaining Size\n");
-		for(i = 0; i < m; i++)
-		{
+    public static void main(String[] args)
+    {
+        // Scanner object to take input from the user
+        Scanner sc = new Scanner(System.in);
 
-			System.out.printf("%6d%13d%10d",i+1,sizes[i].size,sizes[i].block_alloc);
-			if(sizes[i].block_alloc == 0)
-				System.out.printf("\t\tNo Block Allocated\n");
-			else
-				System.out.printf("%15d\n",rem_size[sizes[i].index]);
-		}
-	
+        // Taking input for number of blocks and their sizes
+        System.out.print("Enter the Number of Blocks : ");
+        int n = sc.nextInt();
+        int blocks[] = new int[n];
+        for(int i = 0; i < n; i++)
+        {
+            System.out.print("Enter " + (i + 1) + "th Block's Size : ");
+            blocks[i] = sc.nextInt();
+        }
 
-	}
+        // Taking input for number of processes and their sizes
+        System.out.print("\nEnter the Number of Sizes : ");
+        int m = sc.nextInt();
+        Sizes sizes[] = new Sizes[m];
+        for(int i = 0; i < m; i++)
+            sizes[i] = new Sizes();
 
-	public static void main(String[] args)
-	{
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Enter the Number of Blocks : ");
-		int n = sc.nextInt();
-		int blocks[] = new int[n];
-		for(int i = 0; i < n; i++)
-		{
-			System.out.print("Enter " + (i + 1) + "th Block's Size : ");
-			blocks[i] = sc.nextInt();
-		}
+        for(int i = 0; i < m; i++)
+        {
+            System.out.print("Enter " + (i + 1) + "th Size : ");
+            sizes[i].size = sc.nextInt();
+        }
 
-		System.out.print("\nEnter the Number of Sizes : ");
-		int m = sc.nextInt();
-		Sizes sizes[] = new Sizes[m];
-		for(int i = 0; i < m; i++)
-			sizes[i] = new Sizes();
+        // Menu for user to select memory allocation strategy
+        int ch;
+        do
+        {
+            System.out.println("\n---------MENU---------");
+            System.out.println("1. Worst Fit");
+            System.out.println("2. Next Fit");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice : ");
+            ch = sc.nextInt();
+            switch(ch)
+            {
+                case 1:
+                    WorstFit(blocks, sizes, n, m);  // Call Worst Fit method
+                    break;
+                case 2:
+                    NextFit(blocks, sizes, n, m);  // Call Next Fit method
+                    break;
+                case 3:
+                    System.out.println("GG");  // Exit message
+                    break;
+                default:
+                    System.out.println("Wrong choice entered!!");  // Invalid choice message
+                    break;
+            }
+        } while(ch != 3);  // Loop until user chooses to exit
 
-		for(int i = 0; i < m; i++)
-		{
-			System.out.print("Enter " + (i + 1) + "th Size : ");
-			sizes[i].size = sc.nextInt();
-		}
-		int ch;
-		do
-		{
-			System.out.println("\n---------MENU---------");
-			System.out.println("1.Worst Fit");
-			System.out.println("2.Next Fit");
-			System.out.println("3.Exit");
-			System.out.print("Enter your choice : ");
-			ch = sc.nextInt();
-			switch(ch)
-			{
-				case 1:
-					WorstFit(blocks,sizes,n,m);
-					break;
-				case 2:
-					NextFit(blocks,sizes,n,m);
-					break;
-				case 3:
-					System.out.println("GG");
-					break;
-				default:
-					System.out.println("Wrong choice entered!!");
-					break;
-			}
-		}while(ch != 3);
-
-		
-		
-
-	}
-
+    }
 }
